@@ -10,6 +10,7 @@ import (
 type Config struct {
 	Env         string `yaml:"env" env-default:"local"`
 	StoragePath string `yaml:"storage_path" emv-default:"storage/mySql.go"`
+	HTTPServer  `yaml:"http_server"`
 }
 
 type HTTPServer struct {
