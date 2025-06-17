@@ -8,13 +8,20 @@ import (
 	"net/http"
 	first_jira "prob_info_screen/HTTPServer/handlers/jira/first-jira"
 	"prob_info_screen/config"
+	"prob_info_screen/storage"
 )
 
 func main() {
 
 	config := config.MustLoadConfig()
 
-	fmt.Printf("Config: %+v\n", config)
+	storage, storageErr := storage.InitDB()
+
+	if storageErr != nil {
+		panic(storageErr)
+	}
+
+	fmt.Println("Storage initialized successfully:", storage)
 
 	router := chi.NewRouter()
 
