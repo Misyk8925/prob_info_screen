@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/andygrunwald/go-jira"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"log"
@@ -20,6 +21,25 @@ func main() {
 	if storageErr != nil {
 		panic(storageErr)
 	}
+
+	tp := jira.BasicAuthTransport{
+		Username: config.JiraConfig.Username,
+		Password: config.JiraConfig.Password,
+	}
+
+	client, err := jira.NewClient(tp.Client(), config.JiraConfig.JiraURL)
+	if err != nil {
+		log.Fatal("Failed to create Jira client: ", err)
+	}
+
+	// Test authentication
+	user, _, err := client.User.GetSelf()
+	if err != nil {
+		fmt.Println("❌ Authentication failed!")
+		log.Fatal("Failed to authenticate: ", err)
+	}
+
+	fmt.Printf("✅ Success! Authenticated as: %s\n", user.DisplayName)
 
 	fmt.Println("Storage initialized successfully:", storage)
 

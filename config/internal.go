@@ -1,7 +1,6 @@
 package config
 
 import (
-	"fmt"
 	"github.com/ilyakaznacheev/cleanenv"
 	"os"
 	"time"
@@ -11,12 +10,19 @@ type Config struct {
 	Env         string `yaml:"env" env-default:"local"`
 	StoragePath string `yaml:"storage_path" emv-default:"storage/mySql.go"`
 	HTTPServer  `yaml:"http_server"`
+	JiraConfig  `yaml:"jira_config"`
 }
 
 type HTTPServer struct {
 	Address     string        `yaml:"address" env-default:":8000"`
 	Timeout     time.Duration `yaml:"timeout" env-default:"5s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"5s"`
+}
+
+type JiraConfig struct {
+	JiraURL  string `yaml:"jira_url" env:"JIRA_URL"`
+	Username string `yaml:"username" env:"JIRA_USER"`
+	Password string `yaml:"token" env:"JIRA_TOKEN"`
 }
 
 func MustLoadConfig() *Config {
@@ -35,8 +41,6 @@ func MustLoadConfig() *Config {
 	if err := cleanenv.ReadConfig(configPath, &config); err != nil {
 		panic("failed to read config: " + err.Error())
 	}
-
-	fmt.Printf("Config: %+v\n", config)
 
 	return &config
 }
