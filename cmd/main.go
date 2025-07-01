@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"log"
 	"net/http"
+	db_sync "prob_info_screen/HTTPServer/handlers/jira/db-sync"
 	first_jira "prob_info_screen/HTTPServer/handlers/jira/first-jira"
 	in_progress "prob_info_screen/HTTPServer/handlers/jira/in-progress"
 	"prob_info_screen/config"
@@ -98,6 +99,7 @@ func main() {
 	router.Route("/api/jira", func(r chi.Router) {
 
 		r.Get("/in_progress", in_progress.New())
+		r.Get("/sync-project-db", db_sync.New(storage.DB))
 	})
 
 	// Start the HTTP server
