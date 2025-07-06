@@ -104,10 +104,12 @@ func SyncProjectDB(db *gorm.DB, projectKey string) error {
 		for _, task := range issuesFromJira {
 			// Ищем существующую задачу по ExternalID
 			var existingTask Task
-			if err := tx.Where("external_id = ?", task.ExternalID).First(&existingTask).Error; err != nil {
+			err := tx.Where("external_id = ?", task.ExternalID).First(&existingTask).Error
+			if err != nil {
 				if err == gorm.ErrRecordNotFound {
 					// Задача не существует, создаем ее
-					if err := tx.Create(&task).Error; err != nil {
+					err := tx.Create(&task).Error
+					if err != nil {
 						return fmt.Errorf("failed to create issue %s: %w", task.ExternalID, err)
 					}
 				} else {

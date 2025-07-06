@@ -12,6 +12,7 @@ import (
 	in_progress "prob_info_screen/HTTPServer/handlers/jira/in-progress"
 	"prob_info_screen/config"
 	"prob_info_screen/storage"
+	"time"
 )
 
 func main() {
@@ -25,6 +26,21 @@ func main() {
 	}
 
 	jiraClient, err := jiraConnect(config)
+
+	sprints, _, err := jiraClient.Board.GetAllSprints("1")
+
+	if err != nil {
+		log.Fatal("Failed to get sprints: ", err)
+	}
+
+	currentTime := time.Now()
+	for _, sprint := range sprints {
+
+		remainingDays := sprint.EndDate.Sub(currentTime).Hours() / 24
+		days := int(remainingDays)
+
+		fmt.Println("remaining days in sprint", sprint.Name, ":", days)
+	}
 
 	if err != nil {
 		log.Fatal("Failed to connect to Jira: ", err)
