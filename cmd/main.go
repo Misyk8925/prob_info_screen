@@ -42,6 +42,12 @@ func main() {
 		fmt.Println("remaining days in sprint", sprint.Name, ":", days)
 	}
 
+	tasksForSprint, _, err := jiraClient.Sprint.GetIssuesForSprint(1)
+
+	for _, task := range tasksForSprint {
+		fmt.Println("Task in sprint:", task.Key, "-", task.Fields.Summary)
+	}
+
 	if err != nil {
 		log.Fatal("Failed to connect to Jira: ", err)
 	}
